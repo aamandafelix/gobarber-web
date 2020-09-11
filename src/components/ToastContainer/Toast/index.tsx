@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { CSSProperties, useEffect } from 'react';
 import {
   FiAlertCircle,
   FiCheckCircle,
@@ -12,6 +12,7 @@ import { Container } from './styles';
 
 interface ToastProps {
   message: ToastMessage;
+  style: CSSProperties;
 }
 
 const icons = {
@@ -20,7 +21,7 @@ const icons = {
   success: <FiCheckCircle size={24} />,
 };
 
-const Toast: React.FC<ToastProps> = ({ message }) => {
+const Toast: React.FC<ToastProps> = ({ message, style }) => {
   const { removeToast } = useToast();
 
   useEffect(() => {
@@ -28,14 +29,17 @@ const Toast: React.FC<ToastProps> = ({ message }) => {
       removeToast(message.id);
     }, 3000);
 
-    // automaticamente executada se o componente deixar de existir
     return () => {
       clearTimeout(timer);
     };
   }, [message.id, removeToast]);
 
   return (
-    <Container type={message.type} hasDescription={!!message.description}>
+    <Container
+      type={message.type}
+      hasDescription={!!message.description}
+      style={style}
+    >
       {icons[message.type || 'info']}
       <div>
         <strong>{message.title}</strong>
