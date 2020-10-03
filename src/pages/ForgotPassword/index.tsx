@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiLogIn, FiMail } from 'react-icons/fi';
+import { FiArrowLeft, FiMail } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
@@ -66,7 +66,7 @@ const ForgotPassword: React.FC = () => {
 
         addToast({
           type: 'error',
-          title: 'Erro na autenticação',
+          title: 'Erro na recuperação de senha',
           description:
             'Ocorreu um erro ao tentar realizar a recuperação de senha. Tente novamente.',
         });
@@ -93,9 +93,9 @@ const ForgotPassword: React.FC = () => {
             </Button>
           </Form>
 
-          <Link to="/signin">
-            <FiLogIn size={20} />
-            Voltar ao login
+          <Link to="/">
+            <FiArrowLeft size={20} />
+            Voltar para login
           </Link>
         </AnimationContainer>
       </Content>
