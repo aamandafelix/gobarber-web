@@ -37,6 +37,7 @@
       "no-unused-expressions": "off",
       "import/prefer-default-export": "off",
       "react/jsx-one-expression-per-line": "off",
+      "import/no-duplicates": "off",
       "camelcase": "off",
       "import/extensions": [
         "error",
