@@ -1,0 +1,51 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [master]
+
+env:
+  BUCKET:  gcs.gobarber.amandabezerra.dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2 # Get the most updated version of the code
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+        
+    - name: Install dependencies
+      run: yarn install
+    
+    - name: Run tests
+      run: yarn test --watchAll false
+    
+    - name: Create build
+      run: yarn build
+    
+    # Install GCloud CLI (gsutil)
+    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1'
+        project_id: ${{ secrets.GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+    
+    - name: Upload files to bucket
+      run: gsutil -m rsync -R ./build gs://"$BUCKET"
+    
+    - name: Allow public access
+      run: gsutil -m acl ch -R -u AllUsers:R gs://"$BUCKET"
+    
+    # Set cache meta for static files
+    - name: Set Cache-Control
+      run: gsutil -m setmeta -h "Cache-Control:public, max-age=15768000" gs://"$BUCKET"/**/*.{png,svg,css,js} # 6 months cache
+
+    # Set cache meta for index.html
+    - name: Set Cache-Control
+      run: gsutil setmeta -h "Cache-Control:no-cache, no-store" gs://"$BUCKET"/index.html # Remove cache for index.html
